@@ -17,6 +17,10 @@ public abstract class Account implements Serializable {
 	private GregorianCalendar dateOpened;
 	private double balance;
 	
+	private static long MIL_PER_YEAR = 31556952000L;
+	private static long MIL_PER_MONTH = 2629746000L;
+	private static long MIL_PER_DAY = 86400000L;
+
 	public Account(int number, String owner, GregorianCalendar
 			dateOpened, double balance) {
 		super();
@@ -79,9 +83,20 @@ public abstract class Account implements Serializable {
 			}
 	}
 	
+	public String calendarString() {
+		//FIXME: Day slightly off due to leap years/February/etc
+		long time = dateOpened.getTimeInMillis();
+		long years = time / MIL_PER_YEAR;
+		long months = (time%MIL_PER_YEAR) / MIL_PER_MONTH;
+		long days = (time%MIL_PER_MONTH) / MIL_PER_DAY;
+		
+		String str = months + "/" + days + "/" + (years + 1970L);
+		return str;
+	}
+
 	public String toString() {
-		String str = number + "/t" + owner + "/t" + dateOpened
-				+ "/t" + balance;
+		String str = number + "\t" + owner + "\t" + calendarString()
+				+ "\t" + balance;
 		return str;
 	}
 }
