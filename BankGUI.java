@@ -1,8 +1,6 @@
 package Project3;
 
 import java.awt.*;
-
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.GregorianCalendar;
@@ -27,6 +25,10 @@ public class BankGUI extends JFrame{
 	private JRadioButton checking, savings;
 	
 	private Listener listener;
+	
+	private BankModel model;
+	
+	private JList jListArea;
 	
 	public static void main(String[] args) {
 		BankGUI frame = new BankGUI ("Accounts");
@@ -53,8 +55,8 @@ public class BankGUI extends JFrame{
         addButtons();
         addInfo();
         
-        ListModel dListModel = new BankModel();
-        JList jListArea = new JList(dListModel);
+        model = new BankModel();
+        jListArea = new JList(model);
         JScrollPane scrollPane = new JScrollPane(jListArea);
         table.add(scrollPane);
 
@@ -133,15 +135,18 @@ public class BankGUI extends JFrame{
 	private class Listener implements ActionListener {
 		
 		public void actionPerformed(ActionEvent e) {
+			
+			model = new BankModel();
+			
 			if (e.getSource() == add) {
-				int type;
-				int number;
-				String owner;
+				int type = 0;
+				int number = 0;
+				String owner = "";
 				GregorianCalendar cal = new GregorianCalendar(2015, 10, 10);
-				double bal;
-				double fee;
-				double rate;
-				double min;
+				double bal = 0;
+				double fee = 0;
+				double rate = 0;
+				double min = 0;
 				
 				try {
 					number = Integer.parseInt(fields[0].getText());
@@ -156,8 +161,6 @@ public class BankGUI extends JFrame{
 					type = 0;
 					try {
 						fee = Double.parseDouble(fields[4].getText());
-						rate = 0;
-						min = 0;
 					}
 					catch (NumberFormatException n){
 						JOptionPane.showMessageDialog(null, "A field is empty.");
@@ -169,14 +172,13 @@ public class BankGUI extends JFrame{
 					try {
 						rate = Double.parseDouble(fields[5].getText());
 						min = Double.parseDouble(fields[6].getText());
-						fee = 0;
 					}
 					catch (NumberFormatException n){
 						JOptionPane.showMessageDialog(null, "A field is empty.");
 					}
 				}
-				//addAccount(type, number, owner, cal, bal, fee, rate,
-				//		min);
+				model.addAccount(type, number, owner, cal, bal, fee,
+						rate, min);
 			}
 			if (e.getSource() == clear) {
 				for (int i = 0; i < 7; i++) {
