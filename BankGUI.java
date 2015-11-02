@@ -1,6 +1,12 @@
 package project3;
 
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.GregorianCalendar;
+
 import javax.swing.*;
+import javax.swing.table.TableModel;
 
 public class BankGUI extends JFrame{
 		
@@ -14,92 +20,177 @@ public class BankGUI extends JFrame{
 	
 	private String labelTitles[];
 		
-	private JPanel buttons, info, userInput, table, main;
+	private JPanel buttons, info, totalInfo, userInput, table;
 	
-	private GridBagConstraints loc;
+	private JRadioButton checking, savings;
+	
+	private Listener listener;
 	
 	public static void main(String[] args) {
 		BankGUI frame = new BankGUI ("Accounts");
 		frame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
-		frame.setSize(500, 600);
+		frame.pack();
 		frame.setVisible(true);
 	}
 	
 	public BankGUI(String title) {
 		
+		listener = new Listener();
+		
 		setTitle(title);
-        setLayout(new GridBagLayout());
-        
-        loc = new GridBagConstraints();
-        loc.anchor = GridBagConstraints.NORTH;     
-        loc.insets = new Insets(5, 5, 5, 5);
+        setLayout(new GridLayout(2, 1));
         
 		userInput = new JPanel();
-		userInput.setLayout(new GridBagLayout());
+	//	userInput.setLayout(new FlowLayout());
+		totalInfo = new JPanel();
+		totalInfo.setLayout(new GridLayout(2, 1));
+		
+		table = new JPanel();
+		table.setLayout(new GridLayout(1, 1));
 		
         addButtons();
         addInfo();
         
-        loc.gridx = 0;
-        userInput.add(info, loc);
+        ListModel dListModel = new BankModel();
+        JList jListArea = new JList(dListModel);
+        JScrollPane scrollPane = new JScrollPane(jListArea);
+        table.add(scrollPane);
+
+        add(table);
         
-        loc.gridx = 1;
-		userInput.add(buttons, loc);
+        userInput.add(info, BorderLayout.EAST);
+        
+		userInput.add(buttons, BorderLayout.WEST);
 		
 		add(userInput);
 	}
 	
 	private void addButtons() {
 		buttons = new JPanel();
-		buttons.setLayout(new GridBagLayout());
+		buttons.setLayout(new GridLayout(4, 1));
 		
 		buttons.setOpaque(true);
 		buttons.setBackground(Color.DARK_GRAY);
 		
-		loc.insets = new Insets(5, 5, 5, 5);
-		
 		add = new JButton("Add");
-		loc.gridy = 0;
-		buttons.add(add, loc);
+		add.addActionListener(listener);
+		buttons.add(add);
 		
 		delete = new JButton("Delete");
-		loc.gridy = 1;
-		buttons.add(delete, loc);
+		delete.addActionListener(listener);
+		buttons.add(delete);
 		
 		update = new JButton("Update");
-		loc.gridy = 2;
-		buttons.add(update, loc);
+		update.addActionListener(listener);
+		buttons.add(update);
 		
 		clear = new JButton("Clear");
-		loc.gridy = 3;
-		buttons.add(clear, loc);
+		clear.addActionListener(listener);
+		buttons.add(clear);
 	}
 	
 	private void addInfo() {
 		info = new JPanel();
-		info.setLayout(new GridBagLayout());
+		info.setLayout(new GridLayout(8, 2));
 		
-		loc.insets = new Insets(2, 2, 2, 2);
-		loc.gridx = 0;
+		//Instantiates and groups radio buttons
+		ButtonGroup group = new ButtonGroup();
+		checking = new JRadioButton("Checking", true);
+		savings = new JRadioButton("Savings", false);
+		group.add(checking);
+		group.add(savings);
+		
+		//Adds radio buttons to panel and adds listener
+		info.add(checking);
+		checking.addActionListener(listener);
+		info.add(savings);
+		savings.addActionListener(listener);
 		
 		labels = new JLabel[7];
 		labelTitles = new String[] {"Account Number: ","Account Owner: "
 				,"Date Opened: ", "Current Balance: ", "Monthly Fee: ",
 				"Interest Rate: ", "Minimum Balance: "};
 		
+		fields = new JTextField[7];
+		
+		//Adds text fields and labels
 		for(int i = 0; i < 7; i++) {
 			labels[i] = new JLabel(labelTitles[i]);
-			loc.gridy = i;
-			info.add(labels[i], loc);
+			info.add(labels[i]);
+//			if (i == 3) {
+//				info.add(arg0)
+//			}
+			fields[i] = new JTextField(10);
+			info.add(fields[i]);
 		}
 		
-		loc.gridx = 1;
+		fields[5].setEnabled(false);
+		fields[6].setEnabled(false);
+	}
+	
+	private class Listener implements ActionListener {
 		
-		fields = new JTextField[7];
-		for (int i = 0; i < 7; i++) {
-			fields[i] = new JTextField(10);
-			loc.gridy = i;
-			info.add(fields[i], loc);
+		public void actionPerformed(ActionEvent e) {
+			if (e.getSource() == add) {
+				int type;
+				int number;
+				String owner;
+				GregorianCalendar cal = new GregorianCalendar(2015, 10, 10);
+				double bal;
+				double fee;
+				double rate;
+				double min;
+				
+				try {
+					number = Integer.parseInt(fields[0].getText());
+					owner = fields[1].getText();
+					bal = Double.parseDouble(fields[3].getText());
+				}
+				catch (NumberFormatException n){
+					JOptionPane.showMessageDialog(null, "A field is empty.");
+				}
+				
+				if (checking.isSelected()) {
+					type = 0;
+					try {
+						fee = Double.parseDouble(fields[4].getText());
+						rate = 0;
+						min = 0;
+					}
+					catch (NumberFormatException n){
+						JOptionPane.showMessageDialog(null, "A field is empty.");
+					}
+				}
+					
+				if (savings.isSelected()) {
+					type = 1;
+					try {
+						rate = Double.parseDouble(fields[5].getText());
+						min = Double.parseDouble(fields[6].getText());
+						fee = 0;
+					}
+					catch (NumberFormatException n){
+						JOptionPane.showMessageDialog(null, "A field is empty.");
+					}
+				}
+				//addAccount(type, number, owner, cal, bal, fee, rate,
+				//		min);
+			}
+			if (e.getSource() == clear) {
+				for (int i = 0; i < 7; i++) {
+					fields[i].setText("");
+				}
+			}
+			if (e.getSource() == checking) {
+				fields[4].setEnabled(true);
+				fields[5].setEnabled(false);
+				fields[6].setEnabled(false);
+			}
+			if (e.getSource() == savings) {
+				fields[4].setEnabled(false);
+				fields[5].setEnabled(true);
+				fields[6].setEnabled(true);
+			}
 		}
 	}
 }
