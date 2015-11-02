@@ -179,6 +179,7 @@ public class BankGUI extends JFrame{
 				}
 				model.addAccount(type, number, owner, cal, bal, fee,
 						rate, min);
+				jListArea.setModel(model);
 			}
 			if (e.getSource() == clear) {
 				for (int i = 0; i < 7; i++) {
