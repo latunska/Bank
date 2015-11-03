@@ -136,8 +136,6 @@ public class BankGUI extends JFrame{
 		
 		public void actionPerformed(ActionEvent e) {
 			
-			model = new BankModel();
-			
 			if (e.getSource() == add) {
 				int type = 0;
 				int number = 0;
