@@ -1,5 +1,8 @@
 package Project3;
 
+//Need to add JMenu items, create listeners for jlist, and create
+//drop down calendar
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,8 +22,12 @@ public class BankGUI extends JFrame{
 	private JLabel[] labels;
 	
 	private String labelTitles[];
+	
+	private JMenuBar menuBar;
+	
+	private JMenu file, sort;
 		
-	private JPanel buttons, info, totalInfo, userInput, table;
+	private JPanel buttons, info, totalInfo, userInput, table, main;
 	
 	private JRadioButton checking, savings;
 	
@@ -42,7 +49,9 @@ public class BankGUI extends JFrame{
 		listener = new Listener();
 		
 		setTitle(title);
-        setLayout(new GridLayout(2, 1));
+		setLayout(new GridLayout(2, 1));
+        
+        formatMenus();
         
 		userInput = new JPanel();
 	//	userInput.setLayout(new FlowLayout());
@@ -67,6 +76,18 @@ public class BankGUI extends JFrame{
 		userInput.add(buttons, BorderLayout.WEST);
 		
 		add(userInput);
+	}
+	
+	private void formatMenus() {
+		menuBar = new JMenuBar();
+        file = new JMenu("File");
+        sort = new JMenu("Sort");
+        
+        //Add JMenuItems
+        
+		menuBar.add(sort);
+        menuBar.add(file);
+        setJMenuBar(menuBar);
 	}
 	
 	private void addButtons() {
