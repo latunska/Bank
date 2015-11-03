@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.IOException;
 import java.util.GregorianCalendar;
 
 import javax.swing.*;
@@ -86,40 +87,40 @@ public class BankGUI extends JFrame{
         
         userInput.add(info, BorderLayout.EAST);
         
-		userInput.add(buttons, BorderLayout.WEST);
+	userInput.add(buttons, BorderLayout.WEST);
 		
-		add(userInput);
+	add(userInput);
 		
-		MouseListener mouseListener = new MouseAdapter() {
-		     public void mouseClicked(MouseEvent e) {
-		         if (e.getClickCount() == 1) {
-		             index = jListArea.locationToIndex(e.getPoint());
+	MouseListener mouseListener = new MouseAdapter() {
+	     public void mouseClicked(MouseEvent e) {
+	         if (e.getClickCount() == 1) {
+	             index = jListArea.locationToIndex(e.getPoint());
 		             
-		             if (model.getElementAt(index) instanceof SavingsAccount) {
-		        		 isSavings();
-		        		 double rate = (((SavingsAccount)model.getElementAt(index)).getInterestRate());
-		        		 double minBal = (((SavingsAccount)model.getElementAt(index)).getInterestRate());
-		        		 fields[5].setText(Double.toString(rate));
-		        		 fields[6].setText(Double.toString(minBal));
-		        	 }
-		             if (model.getElementAt(index) instanceof CheckingAccount) {
-		            	 isChecking();
-		            	 double fee = (((CheckingAccount)model.getElementAt(index)).getMonthlyFee());
-		            	 fields[4].setText(Double.toString(fee));
-		             }
+	             if (model.getElementAt(index) instanceof SavingsAccount) {
+	        		 isSavings();
+		        	 double rate = (((SavingsAccount)model.getElementAt(index)).getInterestRate());
+		       		 double minBal = (((SavingsAccount)model.getElementAt(index)).getInterestRate());
+		       		 fields[5].setText(Double.toString(rate));
+		      		 fields[6].setText(Double.toString(minBal));
+		       	 }
+	             if (model.getElementAt(index) instanceof CheckingAccount) {
+	            	 isChecking();
+	            	 double fee = (((CheckingAccount)model.getElementAt(index)).getMonthlyFee());
+	            	 fields[4].setText(Double.toString(fee));
+	             }
 		             
-		             int num = (((Account)model.getElementAt(index)).getNumber());
-		             String owner = (((Account)model.getElementAt(index)).getOwner());
-		             double balance = (((Account)model.getElementAt(index)).getBalance());
-		             fields[0].setText(Integer.toString(num));
-		             fields[1].setText(owner);
-		             fields[3].setText(Double.toString(balance));
+	             int num = (((Account)model.getElementAt(index)).getNumber());
+	             String owner = (((Account)model.getElementAt(index)).getOwner());
+	             double balance = (((Account)model.getElementAt(index)).getBalance());
+	             fields[0].setText(Integer.toString(num));
+	             fields[1].setText(owner);
+	             fields[3].setText(Double.toString(balance));
 		             
-		             changeable = true;
-		          }
-		     }
-		 };
-		 jListArea.addMouseListener(mouseListener);
+	             changeable = true;
+	          }
+	     }
+	 };
+	 jListArea.addMouseListener(mouseListener);
 	}
 	
 	private void isSavings() {
@@ -163,6 +164,9 @@ public class BankGUI extends JFrame{
         saveText = new JMenuItem("Save as Text");
         loadXML = new JMenuItem("Load from XML");
         saveXML = new JMenuItem("Save as XML");
+        
+        saveBinary.addActionListener(listener);
+        loadBinary.addActionListener(listener);
         
         file.add(loadBinary);
         file.add(saveBinary);
@@ -321,6 +325,26 @@ public class BankGUI extends JFrame{
 					model.deleteAccount(index);
 					changeable = false;
 					index = -1;
+				}
+			}
+			
+			if (e.getSource() == saveBinary) {
+				try {
+					model.saveBinary("Temp");
+					System.out.println("Saved to Temp");
+				}
+				catch (IOException x) {
+					JOptionPane.showMessageDialog(null, "Did not save properly");
+				}
+			}
+			
+			if (e.getSource() == loadBinary) {
+				try {
+					model.loadBinary("Temp");
+					System.out.println("Loaded file");
+				}
+				catch (IOException x) {
+					JOptionPane.showMessageDialog(null, "Did not load properly.");
 				}
 			}
 		}

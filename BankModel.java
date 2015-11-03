@@ -76,39 +76,33 @@ public class BankModel extends AbstractListModel {
 
 	}
 
-	public void loadBinary(String file) {
-		// This will reference one line at a time
-        String line = null;
-		try {
-            // FileReader reads text files in the default encoding.
-            FileReader fileReader = 
-                new FileReader(file);
-
-            // Always wrap FileReader in BufferedReader.
-            BufferedReader bufferedReader = 
-                new BufferedReader(fileReader);
-
-            while((line = bufferedReader.toString()) != null) {
-                System.out.println(line);
-            }   
-
-            // Always close files.
-            bufferedReader.close();         
-        }
-        catch(FileNotFoundException ex) {
-            System.out.println(
-                "Unable to open file '" + 
-                file + "");                
-        }
-        catch(IOException ex) {
-            System.out.println(
-                "Error reading file '" 
-                + file + "");                  
-        }
+	public void loadBinary(String file) throws IOException {
+		try{
+			   FileInputStream fin = new FileInputStream(file);
+			   ObjectInputStream ois = new ObjectInputStream(fin);
+			   acts = (ArrayList<Account>) ois.readObject();
+			   ois.close();
+			   fireIntervalAdded(acts, 0, acts.size());
+			   
+		   }catch(Exception ex){
+			   ex.printStackTrace();
+		   } 
 	}
 
-	public void saveBinary(String file) {
-
+	public void saveBinary(String file) throws IOException {
+		ObjectOutputStream oos = null;
+		FileOutputStream fout = null;
+		try{
+		    fout = new FileOutputStream(file, false);
+		    oos = new ObjectOutputStream(fout);
+		    oos.writeObject(acts);
+		} catch (Exception ex) {
+		    ex.printStackTrace();
+		} finally {
+		    if(oos  != null){
+		        oos.close();
+		    } 
+		}
 	}
 
 	public void loadText(String file) {
