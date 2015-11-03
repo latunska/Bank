@@ -26,6 +26,9 @@ public class BankGUI extends JFrame{
 	private JMenuBar menuBar;
 	
 	private JMenu file, sort;
+	
+	private JMenuItem sortNumber, sortOwner, sortDate, saveText,
+		loadText, saveBinary, loadBinary, saveXML, loadXML;
 		
 	private JPanel buttons, info, totalInfo, userInput, table, main;
 	
@@ -83,10 +86,31 @@ public class BankGUI extends JFrame{
         file = new JMenu("File");
         sort = new JMenu("Sort");
         
+        sortNumber = new JMenuItem("By Account Number");
+        sortOwner = new JMenuItem("By Account Owner");
+        sortDate = new JMenuItem("By Date Opened");
+        
+        sort.add(sortNumber);
+        sort.add(sortOwner);
+        sort.add(sortDate);
+
+        loadBinary = new JMenuItem("Load from Binary");
+        saveBinary = new JMenuItem("Save as Binary");
+        loadText = new JMenuItem("Load from Text");
+        saveText = new JMenuItem("Save as Text");
+        loadXML = new JMenuItem("Load from XML");
+        saveXML = new JMenuItem("Save as XML");
+        
+        file.add(loadBinary);
+        file.add(saveBinary);
+        file.add(loadText);
+        file.add(saveText);
+        file.add(loadXML);
+        file.add(saveXML);
         //Add JMenuItems
         
-		menuBar.add(sort);
-        menuBar.add(file);
+		menuBar.add(file);
+        menuBar.add(sort);
         setJMenuBar(menuBar);
 	}
 	
