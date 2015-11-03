@@ -1,11 +1,13 @@
 package Project3;
 
-//Need to add JMenu items, create listeners for jlist, and create
-//drop down calendar
+//Need to create drop down calendar, convert to JTable at some point
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.GregorianCalendar;
 
 import javax.swing.*;
@@ -56,6 +58,8 @@ public class BankGUI extends JFrame{
         
         formatMenus();
         
+        
+        
 		userInput = new JPanel();
 	//	userInput.setLayout(new FlowLayout());
 		totalInfo = new JPanel();
@@ -79,6 +83,57 @@ public class BankGUI extends JFrame{
 		userInput.add(buttons, BorderLayout.WEST);
 		
 		add(userInput);
+		
+		MouseListener mouseListener = new MouseAdapter() {
+		     public void mouseClicked(MouseEvent e) {
+		         if (e.getClickCount() == 1) {
+		             int index = jListArea.locationToIndex(e.getPoint());
+		             
+		             if (model.getElementAt(index) instanceof SavingsAccount) {
+		        		 isSavings();
+		        		 double rate = (((SavingsAccount)model.getElementAt(index)).getInterestRate());
+		        		 double minBal = (((SavingsAccount)model.getElementAt(index)).getInterestRate());
+		        		 fields[5].setText(Double.toString(rate));
+		        		 fields[6].setText(Double.toString(minBal));
+		        	 }
+		             if (model.getElementAt(index) instanceof CheckingAccount) {
+		            	 isChecking();
+		            	 double fee = (((CheckingAccount)model.getElementAt(index)).getMonthlyFee());
+		            	 fields[4].setText(Double.toString(fee));
+		             }
+		             
+		             int num = (((Account)model.getElementAt(index)).getNumber());
+		             String owner = (((Account)model.getElementAt(index)).getOwner());
+		             double balance = (((Account)model.getElementAt(index)).getBalance());
+		             fields[0].setText(Integer.toString(num));
+		             fields[1].setText(owner);
+		             fields[3].setText(Double.toString(balance));
+		          }
+		     }
+		 };
+		 jListArea.addMouseListener(mouseListener);
+	}
+	
+	private void isSavings() {
+		clear();
+		savings.setSelected(true);
+		fields[4].setEnabled(false);
+		fields[5].setEnabled(true);
+		fields[6].setEnabled(true);
+	}
+	
+	private void isChecking() {
+		clear();
+		checking.setSelected(true);
+		fields[4].setEnabled(true);
+		fields[5].setEnabled(false);
+		fields[6].setEnabled(false);
+	}
+	
+	private void clear() {
+		for (int i = 0; i < 7; i++) {
+			fields[i].setText("");
+		}
 	}
 	
 	private void formatMenus() {
@@ -225,19 +280,13 @@ public class BankGUI extends JFrame{
 				jListArea.setModel(model);
 			}
 			if (e.getSource() == clear) {
-				for (int i = 0; i < 7; i++) {
-					fields[i].setText("");
-				}
+				clear();
 			}
 			if (e.getSource() == checking) {
-				fields[4].setEnabled(true);
-				fields[5].setEnabled(false);
-				fields[6].setEnabled(false);
+				isChecking();
 			}
 			if (e.getSource() == savings) {
-				fields[4].setEnabled(false);
-				fields[5].setEnabled(true);
-				fields[6].setEnabled(true);
+				isSavings();
 			}
 		}
 	}
