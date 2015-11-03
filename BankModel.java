@@ -1,5 +1,6 @@
 package Project3;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 
@@ -7,7 +8,7 @@ import javax.swing.AbstractListModel;
 
 public class BankModel extends AbstractListModel {
 
-	ArrayList<Account> acts;
+	private ArrayList<Account> acts;
 
 	BankModel() {
 		acts = new ArrayList<Account>();
@@ -22,22 +23,45 @@ public class BankModel extends AbstractListModel {
 			GregorianCalendar dateOpened, double bal, double monthFee, 
 				double interestRate, double minBal){
 		if (act ==1){
-			 acts.add(new SavingsAccount(actNum, name, 
-					dateOpened, bal, minBal, interestRate));
+			 acts.add(getSize(),new SavingsAccount(actNum, name, 
+							dateOpened, bal, minBal, interestRate));
 		}
 		else if (act ==0){
-			acts.add(new CheckingAccount(actNum, name, 
-					dateOpened, bal, monthFee));
+			acts.add(getSize(),new CheckingAccount(actNum, name, 
+							dateOpened, bal, monthFee));
+		
 		}
 		fireIntervalAdded(acts, 0, acts.size());
+		for(Account i:acts){
+			System.out.println(i+",  "+ acts.size());
+		}
 	}
 
 	public void deleteAccount(int actPos) {
-
+		acts.remove(actPos);
+		fireIntervalRemoved(acts, 0, getSize());
+		System.out.println(actPos+",  "+ acts.size());
 	}
 
-	public void updateAccount(Account act) {
-
+	public void updateAccount(Account act, int actNum, String name, 
+			GregorianCalendar dateOpened, double bal, double monthFee, 
+			double interestRate, double minBal) {
+		if (act instanceof SavingsAccount){
+			 ((SavingsAccount) act).setMinBalance(minBal);
+			 ((SavingsAccount) act).setInterestRate(interestRate);
+			 act.setOwner(name);
+			 act.setBalance(bal);
+			 act.setDateOpened(dateOpened);
+			 act.setNumber(actNum);
+		}
+		else if (act instanceof CheckingAccount){
+			((CheckingAccount) act).setMonthlyFee(monthFee);
+			act.setOwner(name);
+			act.setBalance(bal);
+			act.setDateOpened(dateOpened);
+			act.setNumber(actNum);
+		}
+		fireContentsChanged(acts, 0, acts.size());
 	}
 
 	public void sortByOwner() {
@@ -53,7 +77,34 @@ public class BankModel extends AbstractListModel {
 	}
 
 	public void loadBinary(String file) {
+		// This will reference one line at a time
+        String line = null;
+		try {
+            // FileReader reads text files in the default encoding.
+            FileReader fileReader = 
+                new FileReader(file);
 
+            // Always wrap FileReader in BufferedReader.
+            BufferedReader bufferedReader = 
+                new BufferedReader(fileReader);
+
+            while((line = bufferedReader.toString()) != null) {
+                System.out.println(line);
+            }   
+
+            // Always close files.
+            bufferedReader.close();         
+        }
+        catch(FileNotFoundException ex) {
+            System.out.println(
+                "Unable to open file '" + 
+                file + "");                
+        }
+        catch(IOException ex) {
+            System.out.println(
+                "Error reading file '" 
+                + file + "");                  
+        }
 	}
 
 	public void saveBinary(String file) {
@@ -75,6 +126,8 @@ public class BankModel extends AbstractListModel {
 	public void saveXML(String file) {
 
 	}
+
+
 	/*
 	 * @Override protected void fireContentsChanged(Object source,int index0,
 	 * int index1){ if(source instanceof Account){ while (Account)
