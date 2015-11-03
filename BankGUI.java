@@ -42,6 +42,10 @@ public class BankGUI extends JFrame{
 	
 	private JList jListArea;
 	
+	private int index;
+	
+	private boolean changeable;
+	
 	public static void main(String[] args) {
 		BankGUI frame = new BankGUI ("Accounts");
 		frame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
@@ -50,6 +54,8 @@ public class BankGUI extends JFrame{
 	}
 	
 	public BankGUI(String title) {
+		
+		index = -1;
 		
 		listener = new Listener();
 		
@@ -87,7 +93,7 @@ public class BankGUI extends JFrame{
 		MouseListener mouseListener = new MouseAdapter() {
 		     public void mouseClicked(MouseEvent e) {
 		         if (e.getClickCount() == 1) {
-		             int index = jListArea.locationToIndex(e.getPoint());
+		             index = jListArea.locationToIndex(e.getPoint());
 		             
 		             if (model.getElementAt(index) instanceof SavingsAccount) {
 		        		 isSavings();
@@ -108,6 +114,8 @@ public class BankGUI extends JFrame{
 		             fields[0].setText(Integer.toString(num));
 		             fields[1].setText(owner);
 		             fields[3].setText(Double.toString(balance));
+		             
+		             changeable = true;
 		          }
 		     }
 		 };
@@ -287,6 +295,33 @@ public class BankGUI extends JFrame{
 			}
 			if (e.getSource() == savings) {
 				isSavings();
+			}
+			if (e.getSource() == update) {
+				if (index > 0) {
+					int actNum = Integer.parseInt(fields[0].getText());
+					String name = fields[1].getText();
+					GregorianCalendar cal = new GregorianCalendar(2015, 10, 10);
+					double bal = Double.parseDouble(fields[3].getText());
+					double monthFee = 0;
+					double interestRate = 0;
+					double minBal = 0;
+					if (checking.isSelected()) {
+						monthFee = Double.parseDouble(fields[4].getText());
+					}
+					if (savings.isSelected()) {
+						interestRate = Double.parseDouble(fields[5].getText());
+						minBal = Double.parseDouble(fields[6].getText());
+					}
+					model.updateAccount((Account) model.getElementAt(index), actNum, name, cal, bal, monthFee, interestRate, minBal);
+				}
+			}
+			
+			if (e.getSource() == delete) {
+				if (changeable) {
+					model.deleteAccount(index);
+					changeable = false;
+					index = -1;
+				}
 			}
 		}
 	}
