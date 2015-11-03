@@ -4,13 +4,10 @@
 package Project3;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 
-/**
- * @author Alex
- * @author Cari
- */
-public abstract class Account implements Serializable {
+public abstract class Account implements Serializable, Comparable<Account> {
 	private static final long serialVersionUID = 1L;
 	private int number;
 	private String owner;
@@ -20,7 +17,7 @@ public abstract class Account implements Serializable {
 	private static long MIL_PER_YEAR = 31556952000L;
 	private static long MIL_PER_MONTH = 2629746000L;
 	private static long MIL_PER_DAY = 86400000L;
-
+	
 	public Account(int number, String owner, GregorianCalendar
 			dateOpened, double balance) {
 		super();
@@ -93,10 +90,11 @@ public abstract class Account implements Serializable {
 		String str = months + "/" + days + "/" + (years + 1970L);
 		return str;
 	}
-
+	
 	public String toString() {
-		String str = number + "\t" + owner + "\t" + calendarString()
-				+ "\t" + balance;
+		String str = number + "      " + owner + "    " 
+				+ calendarString() + "    " + balance;
 		return str;
 	}
+	
 }
