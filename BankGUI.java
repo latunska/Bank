@@ -1,6 +1,10 @@
 package Project3;
 
+<<<<<<< HEAD
 //Need to create drop down calendar, convert to JTable at some point
+=======
+//Need to add calendar, style guide, more warnings?
+>>>>>>> 4bc39691e4392c0f63f86f6ca193fe90761c9c64
 
 import java.awt.*;
 import java.awt.event.*;
@@ -43,8 +47,9 @@ public class BankGUI extends JFrame {
 
 	private BankModel model;
 
-	private JList jListArea;
-
+//	private JList jListArea;
+	private JTable jTableArea;
+	
 	private int index;
 
 	private boolean changeable;
@@ -93,39 +98,72 @@ public class BankGUI extends JFrame {
 
 		add(userInput);
 
-		MouseListener mouseListener = new MouseAdapter() {
-			public void mouseClicked(MouseEvent e) {
-				if (e.getClickCount() == 1) {
-					index = jListArea.locationToIndex(e.getPoint());
+//		MouseListener mouseListener = new MouseAdapter() {
+//			public void mouseClicked(MouseEvent e) {
+//				if (e.getClickCount() == 1) {
+//					index = 	jListArea.locationToIndex(e.getPoint());
+//
+//					if (model.getElementAt(index) instanceof SavingsAccount) {
+//						isSavings();
+//						double rate = (((SavingsAccount) model.getElementAt(index)).getInterestRate());
+//					double minBal = (((SavingsAccount) model.getElementAt(index)).getInterestRate());
+//					fields[5].setText(Double.toString(rate));
+//					fields[6].setText(Double.toString(minBal));
+//					}
+//					if (model.getElementAt(index) instanceof CheckingAccount) {
+//						isChecking();
+//						double fee = (((CheckingAccount) model.getElementAt(index)).getMonthlyFee());
+//						fields[4].setText(Double.toString(fee));
+//					}
 
-					if (model.getElementAt(index) instanceof SavingsAccount) {
-						isSavings();
-						double rate = (((SavingsAccount) model.getElementAt(index)).getInterestRate());
-						double minBal = (((SavingsAccount) model.getElementAt(index)).getInterestRate());
-						fields[5].setText(Double.toString(rate));
-						fields[6].setText(Double.toString(minBal));
-					}
-					if (model.getElementAt(index) instanceof CheckingAccount) {
-						isChecking();
-						double fee = (((CheckingAccount) model.getElementAt(index)).getMonthlyFee());
-						fields[4].setText(Double.toString(fee));
-					}
+//					int num = (((Account) model.getElementAt(index)).getNumber());
+//					String owner = (((Account) model.getElementAt(index)).getOwner());
+//					double balance = (((Account) model.getElementAt(index)).getBalance());
+//					fields[0].setText(Integer.toString(num));
+//					fields[1].setText(owner);
+//					calendar.setCalendar(((Account) model.getElementAt(index)).getDateOpened());
+//					fields[3].setText(Double.toString(balance));
 
-					int num = (((Account) model.getElementAt(index)).getNumber());
-					String owner = (((Account) model.getElementAt(index)).getOwner());
-					double balance = (((Account) model.getElementAt(index)).getBalance());
-					fields[0].setText(Integer.toString(num));
-					fields[1].setText(owner);
-					calendar.setCalendar(((Account) model.getElementAt(index)).getDateOpened());
-					fields[3].setText(Double.toString(balance));
-
-					changeable = true;
-				}
-			}
-		};
-		jListArea.addMouseListener(mouseListener);
-	}
-
+//					changeable = true;
+//				}
+//			}
+//		};
+//		jListArea.addMouseListener(mouseListener);
+//	}
+	MouseListener mouseListener = new MouseAdapter() {
+	     public void mouseClicked(MouseEvent e) {
+	         if (e.getClickCount() == 1) {
+	             index = jTableArea.rowAtPoint(e.getPoint());
+	             
+	             fields[0].setText(Integer.toString((int)model.getValueAt(index, 0)));
+	             fields[1].setText((String)model.getValueAt(index, 1));
+	             fields[2].setText((String)model.getValueAt(index, 2));
+	             fields[3].setText(Double.toString((double)model.getValueAt(index, 3)));
+	             if (model.getValueAt(index, 4) instanceof String) {
+	            	 fields[4].setText((String)model.getValueAt(index, 4));
+	             }
+	             else if (model.getValueAt(index, 4) instanceof Double) {
+	            	 fields[4].setText(Double.toString((double)model.getValueAt(index, 4)));
+	             }
+	             if (model.getValueAt(index, 5) instanceof String) {
+	            	 fields[5].setText((String)model.getValueAt(index, 5));
+	             }
+	             else if (model.getValueAt(index, 5) instanceof Double) {
+	            	 fields[5].setText(Double.toString((double)model.getValueAt(index, 5)));
+	             }
+	             if (model.getValueAt(index, 6) instanceof String) {
+	            	 fields[6].setText((String)model.getValueAt(index, 6));
+	             }
+	             else if (model.getValueAt(index, 6) instanceof Double) {
+	            	 fields[6].setText(Double.toString((double)model.getValueAt(index, 6)));
+	             } 
+	             
+	             changeable = true;
+	          }
+	     }
+	 };
+	 jTableArea.addMouseListener(mouseListener);
+}
 	private void isSavings() {
 		clear();
 		savings.setSelected(true);
@@ -217,18 +255,23 @@ public class BankGUI extends JFrame {
 	}
 
 	private void addInfo() {
+
+		info = new JPanel();
+		info.setLayout(new GridLayout(8, 2));
+		
+		//formats the Calendar button
 		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
 		Date date =null;
+		
+		//sets the starting value
 		try {
 			date = sdf.parse("11/04/2015");
 		} catch (ParseException e) {
 			
 			e.printStackTrace();
 		}
-		info = new JPanel();
-		info.setLayout(new GridLayout(8, 2));
 		
-		//sets up the calendar button and initial date
+		//sets up the calendar button and sets date
 		calendar = new JDateChooser(date);
 		calendar.setDate(date);
 		
@@ -252,7 +295,7 @@ public class BankGUI extends JFrame {
 
 		fields = new JTextField[7];
 
-		// Adds text fields and labels
+		// Adds text fields and labels, calendar replaces a field
 		for (int i = 0; i < 7; i++) {
 			labels[i] = new JLabel(labelTitles[i]);
 			info.add(labels[i]);
@@ -289,6 +332,7 @@ public class BankGUI extends JFrame {
 					number = Integer.parseInt(fields[0].getText());
 					owner = fields[1].getText();
 					bal = Double.parseDouble(fields[3].getText());
+<<<<<<< HEAD
 					
 					// pulls the Date opened from the text field
 					 cal = (GregorianCalendar) calendar.getCalendar();
@@ -323,6 +367,57 @@ public class BankGUI extends JFrame {
 					model.addAccount(type, number, owner, cal, bal, fee, rate, min);
 					jListArea.setModel(model);
 				}
+=======
+					if (checking.isSelected()) {
+						type = 0;
+						try {
+							fee = Double.parseDouble(fields[4].getText());
+							model.addAccount(type, number, owner, cal, bal, 
+									fee, rate, min);
+						}
+						catch (NumberFormatException n){
+							throw n;
+						}
+					}
+						
+					if (savings.isSelected()) {
+						type = 1;
+						try {
+							rate = Double.parseDouble(fields[5].getText());
+							min = Double.parseDouble(fields[6].getText());
+							if (bal < min) {
+								throw new IllegalArgumentException();
+							}
+							model.addAccount(type, number, owner, cal, bal, 
+									fee, rate, min);
+						}
+						catch (NumberFormatException n){
+							throw n;
+						}
+						catch (IllegalArgumentException a) {
+							throw a;
+						}
+					}
+					//pulls the Date opened from the text field
+					//calend = fields[2].getText().split("/");
+					// splits it into its corresponding parts
+					//cale[0]=Integer.parseInt(calend[0]);
+					//cale[1]=Integer.parseInt(calend[1]);
+					//cale[2]=Integer.parseInt(calend[2]);
+					//cal= new GregorianCalendar(cale[2],cale[0],//cale[1]);
+				}
+				catch (NumberFormatException n){
+					JOptionPane.showMessageDialog(null, "Either a "
+								+ "field is empty or contains incorrect"
+								+ " information (ex. 'a' for balance.");
+				}
+				catch (IllegalArgumentException a) {
+					JOptionPane.showMessageDialog(null, "Your balance "
+							+ "is below the minimum balance allowed.");
+				}
+				//Check on this
+				jTableArea.setModel(model);
+>>>>>>> 4bc39691e4392c0f63f86f6ca193fe90761c9c64
 			}
 			if (e.getSource() == clear) {
 				clear();
@@ -379,20 +474,36 @@ public class BankGUI extends JFrame {
 					JOptionPane.showMessageDialog(null, "Did not load properly.");
 				}
 			}
+<<<<<<< HEAD
 
 			if (e.getSource() == saveText) {
 				try {
 					model.saveText("Temp.txt");
 					System.out.println("Saved to Temp");
 				} catch (IOException x) {
+=======
+			
+			if (e.getSource() == saveText) {
+				try {
+					model.saveText("TextTemp.txt");
+					System.out.println("Saved to Temp");
+				}
+				catch (IOException x) {
+>>>>>>> 4bc39691e4392c0f63f86f6ca193fe90761c9c64
 					JOptionPane.showMessageDialog(null, "Did not save properly");
 				}
 			}
 
 			if (e.getSource() == loadText) {
+<<<<<<< HEAD
 				model.loadText("Temp.txt");
 			}
 
+=======
+				model.loadText("TextTemp.txt");
+			}
+			
+>>>>>>> 4bc39691e4392c0f63f86f6ca193fe90761c9c64
 			if (e.getSource() == sortNumber) {
 				model.sortByNumber();
 				index = -1;
