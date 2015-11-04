@@ -110,11 +110,88 @@ public class BankModel extends AbstractListModel {
 	}
 
 	public void loadText(String file) {
+		// This will reference one line at a time
+        String line = null;
+        String[] parts=null;
+        String[]lines;
+        String[] sigh;
+        int[] date={0,0,0};
+		try {
+            // FileReader reads text files in the default encoding.
+            FileReader fileReader = 
+                new FileReader(file);
 
+            // Always wrap FileReader in BufferedReader.
+            BufferedReader bufferedReader = 
+                new BufferedReader(fileReader);
+
+            while((line = bufferedReader.readLine()) != null) {
+               lines=line.split(",        ");
+               System.out.println(lines.length+" "+lines[1]);
+               for(int j=0;j<lines.length;j++){
+               parts=lines[j].split(",");
+               System.out.println(parts.length+" "+parts[j]);
+               sigh=parts[3].split("/");
+               for(int i=0; i<sigh.length;i++){
+            	  date[i]= Integer.parseInt(sigh[i]);
+               }
+               GregorianCalendar calend=new GregorianCalendar(date[2],date[0],date[1]);
+               if(parts[0]=="SavingsAccount"){
+            	   
+            	   acts.add(new SavingsAccount(Integer.parseInt(parts[1]),parts[2],calend,Double.parseDouble(parts[5]),Double.parseDouble(parts[6]),Double.parseDouble(parts[7])));
+               }
+               if(parts[0]=="CheckingAccount"){
+            	   acts.add(new CheckingAccount(Integer.parseInt(parts[1]),parts[2],calend,Double.parseDouble(parts[4]),Double.parseDouble(parts[5])));
+               }
+               }
+            }   
+
+            // Always close files.
+            bufferedReader.close();         
+        }
+        catch(FileNotFoundException ex) {
+            System.out.println(
+                "Unable to open file '" + 
+                file + "");                
+        }
+        catch(IOException ex) {
+            System.out.println(
+                "Error reading file '" 
+                + file + "");                  
+        }
 	}
 
-	public void saveText(String file) {
+	public void saveText(String name) throws IOException {
+		File file = new File(name);
+		file.createNewFile();
+		
+		try {
+            // FileWriter writes text files in the default encoding.
+            FileWriter writer = 
+                new FileWriter(file);
 
+            // BufferWriter holds the text
+            BufferedWriter buffer = 
+                new BufferedWriter(writer);
+
+            for(Account i:acts) {
+              buffer.write(i.getClass()+",        "+i.toString(),15, i.toString().length());
+              buffer.newLine();
+            }   
+
+            
+            buffer.close();         
+        }
+        catch(FileNotFoundException ex) {
+            System.out.println(
+                "Unable to open file '" + 
+                file + "");                
+        }
+        catch(IOException ex) {
+            System.out.println(
+                "Error reading file '" 
+                + file + "");                  
+        }
 	}
 
 	public void loadXML(String file) {
@@ -124,30 +201,6 @@ public class BankModel extends AbstractListModel {
 	public void saveXML(String file) {
 
 	}
-
-
-	/*
-	 * @Override protected void fireContentsChanged(Object source,int index0,
-	 * int index1){ if(source instanceof Account){ while (Account)
-	 * 
-	 * if (source instanceof CheckingAccount){
-	 * 
-	 * } else if (source instanceof SavingsAccount){
-	 * 
-	 * } }
-	 * 
-	 * }
-	 * 
-	 * @Override protected void fireIntervalAdded(Object source,int index0, int
-	 * index1){
-	 * 
-	 * }
-	 * 
-	 * @Override protected void fireIntervalRemoved(Object source,int index0,
-	 * int index1){
-	 * 
-	 * }
-	 */
 
 	@Override
 	public Object getElementAt(int position) {

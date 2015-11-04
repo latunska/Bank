@@ -42,7 +42,7 @@ public class CheckingAccount extends Account {
 	}
 	
 	public String toString() {
-		String str = super.toString() + "\t" +  monthlyFee;
+		String str = super.toString() + ",        " +  monthlyFee;
 		return str;
 	}
 	

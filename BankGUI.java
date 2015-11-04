@@ -257,7 +257,8 @@ public class BankGUI extends JFrame{
 		
 		public void actionPerformed(ActionEvent e) {
 			
-			if (e.getSource() == add) {
+							String[]calend;
+				int[] cale = {2015, 10, 10};
 				int type = 0;
 				int number = 0;
 				String owner = "";
@@ -271,6 +272,13 @@ public class BankGUI extends JFrame{
 					number = Integer.parseInt(fields[0].getText());
 					owner = fields[1].getText();
 					bal = Double.parseDouble(fields[3].getText());
+					//pulls the Date opened from the text field
+					//calend = fields[2].getText().split("/");
+					// splits it into its corresponding parts
+					//cale[0]=Integer.parseInt(calend[0]);
+					//cale[1]=Integer.parseInt(calend[1]);
+					//cale[2]=Integer.parseInt(calend[2]);
+					//cal= new GregorianCalendar(cale[2],cale[0],//cale[1]);
 				}
 				catch (NumberFormatException n){
 					JOptionPane.showMessageDialog(null, "A field is empty.");
@@ -358,11 +366,17 @@ public class BankGUI extends JFrame{
 			}
 			
 			if (e.getSource() == saveText) {
-				model.saveText("TextTemp");
+								try {
+					model.saveText("TextTemp.txt");
+					System.out.println("Saved to Temp");
+				}
+				catch (IOException x) {
+					JOptionPane.showMessageDialog(null, "Did not save properly");
+				}
 			}
 			
 			if (e.getSource() == loadText) {
-				model.loadText("TextTemp");
+				model.loadText("TextTemp.txt");
 			}
 			
 			if (e.getSource() == sortNumber) {

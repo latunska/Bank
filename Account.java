@@ -87,13 +87,33 @@ public abstract class Account implements Serializable, Comparable<Account> {
 		long months = (time%MIL_PER_YEAR) / MIL_PER_MONTH;
 		long days = (time%MIL_PER_MONTH) / MIL_PER_DAY;
 		
-		String str = months + "/" + days + "/" + (years + 1970L);
-		return str;
+//		String str = months + "/" + days + "/" + (years + 1970L);
+//		return str;
+		//		if (days>9 &&months>9){
+			String str = dateOpened.MONTH + "/" + dateOpened.DAY_OF_MONTH + "/" + dateOpened.YEAR;
+			System.out.println(str);
+			return str;
+//		}
+//		if(months>9 && days<10)
+//		{
+//			String str =dateOpened.MONTH + "/0" + dateOpened.DAY_OF_MONTH + "/" + dateOpened.YEAR;
+//			return str;
+//		}
+//		else if(months<10 && days>9)
+//		{
+//			String str ="0"+ dateOpened.MONTH + "/" +  dateOpened.DAY_OF_MONTH + "/" + dateOpened.YEAR;
+//			return str;
+//		}
+//		else 
+//		{
+//			String str ="0"+ dateOpened.MONTH + "/0" +  dateOpened.DAY_OF_MONTH + "/" + dateOpened.YEAR;
+//			return str;
+//		}
 	}
 	
 	public String toString() {
-		String str = number + "      " + owner + "    " 
-				+ calendarString() + "    " + balance;
+		String str = number + ",        " + owner + ",        " 
+				+ calendarString() + ",        " + balance;
 		return str;
 	}
 	

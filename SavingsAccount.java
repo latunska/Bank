@@ -52,7 +52,7 @@ public class SavingsAccount extends Account {
 	}
 	
 	public String toString() {
-		String str = super.toString() + "\t" + minBalance + "\t"
+		String str = super.toString() + ",        ,        " + minBalance + ",        "
 				+ interestRate;
 		return str;
 	}
