@@ -1,4 +1,4 @@
-package Project3;
+package project3;
 
 import java.io.*;
 import java.util.ArrayList;
