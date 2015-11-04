@@ -154,7 +154,7 @@ used in the BankGUI class.
 //            GregorianCalendar c = new GregorianCalendar(year, month,
 //            		day);
 //            
-//            if (lines[0].equals("Checking")) {
+//            if (lines[0].equals("CheckingAccount")) {
 //	            Double fee = Double.parseDouble(lines[5]);
 //            	acts.add(new CheckingAccount(actNum, actOwn, c,
 //            			balance, fee));
