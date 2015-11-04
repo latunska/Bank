@@ -1,13 +1,6 @@
-/**
- * 
- */
 package Project3;
 
 import java.util.GregorianCalendar;
-/**
- * @author Alex
- * @author Cari
- */
 
 public class SavingsAccount extends Account {
 	private static final long serialVersionUID = 1L;
@@ -53,8 +46,8 @@ public class SavingsAccount extends Account {
 	}
 	
 	public String toString() {
-		String str = super.toString() + ",        ,        " + minBalance + ",        "
-				+ interestRate;
+		String str = super.toString() + ",        ,        " 
+				+ minBalance + ",        "+ interestRate;
 		return str;
 	}
 	

@@ -1,6 +1,7 @@
-package project3;
+package Project3;
 
 import java.io.*;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.GregorianCalendar;
@@ -9,6 +10,15 @@ import java.util.Vector;
 import javax.swing.AbstractListModel;
 import javax.swing.JOptionPane;
 import javax.swing.table.AbstractTableModel;
+
+/*****************************************************************
+This class functions as the model for either the list or table
+used in the BankGUI class.
+
+@author Carolyn
+@author Alex
+@version November 2015
+******************************************************************/
 
 //public class BankModel extends AbstractListModel {
 //
@@ -117,8 +127,8 @@ import javax.swing.table.AbstractTableModel;
 //    String line = null;
 //    String[] parts=null;
 //    String[]lines;
-//    String[] sigh;
 //    int[] date={0,0,0};
+//    
 //	try {
 //        // FileReader reads text files in the default encoding.
 //        FileReader fileReader = 
@@ -129,36 +139,44 @@ import javax.swing.table.AbstractTableModel;
 //            new BufferedReader(fileReader);
 //
 //        while((line = bufferedReader.readLine()) != null) {
-//           lines=line.split(",        ");
-//           System.out.println(lines.length+" "+lines[1]);
-//           for(int j=0;j<lines.length;j++){
-//           parts=lines[j].split(",");
-//           System.out.println(parts.length+" "+parts[j]);
-//           sigh=parts[3].split("/");
-//           for(int i=0; i<sigh.length;i++){
-//        	  date[i]= Integer.parseInt(sigh[i]);
-//           }
-//           GregorianCalendar calend=new GregorianCalendar(date[2],date[0],date[1]);
-//           if(parts[0]=="SavingsAccount"){
-//        	   
-//        	   acts.add(new SavingsAccount(Integer.parseInt(parts[1]),parts[2],calend,Double.parseDouble(parts[5]),Double.parseDouble(parts[6]),Double.parseDouble(parts[7])));
-//           }
-//           if(parts[0]=="CheckingAccount"){
-//        	   acts.add(new CheckingAccount(Integer.parseInt(parts[1]),parts[2],calend,Double.parseDouble(parts[4]),Double.parseDouble(parts[5])));
-//           }
-//           }
-//        }   
-//
+//            lines = line.split(",        ");
+//            
+//            int actNum = Integer.parseInt(lines[1]);
+//            String actOwn = lines[2];
+//            String cal = lines[3];
+//            Double balance = Double.parseDouble(lines[4]);
+//            
+//            parts = cal.split("/");
+//            int month = Integer.parseInt(parts[0]);
+//            int day = Integer.parseInt(parts[1]);
+//            int year = Integer.parseInt(parts[2]);
+//            
+//            GregorianCalendar c = new GregorianCalendar(year, month,
+//            		day);
+//            
+//            if (lines[0].equals("Checking")) {
+//	            Double fee = Double.parseDouble(lines[5]);
+//            	acts.add(new CheckingAccount(actNum, actOwn, c,
+//            			balance, fee));
+//            }
+//            else {
+//	            Double rate = Double.parseDouble(lines[6]);
+//	            Double min = Double.parseDouble(lines[7]);
+//            	acts.add(new SavingsAccount(actNum, actOwn, c,
+//            			balance, rate, min));
+//			  fireIntervalAdded(acts, 0, acts.size());
+//            }
+//        }
 //        // Always close files.
 //        bufferedReader.close();         
 //    }
 //    catch(FileNotFoundException ex) {
-//        System.out.println(
+//    	JOptionPane.showMessageDialog(null, 
 //            "Unable to open file '" + 
 //            file + "");                
 //    }
 //    catch(IOException ex) {
-//        System.out.println(
+//    	JOptionPane.showMessageDialog(null, 
 //            "Error reading file '" 
 //            + file + "");                  
 //    }
@@ -177,7 +195,8 @@ import javax.swing.table.AbstractTableModel;
 //					new BufferedWriter(writer);
 //
 //			for(Account i:acts) {
-//				buffer.write(i.getClass()+",        "+i.toString(),15, i.toString().length());
+//				buffer.write(i.getClass()+",        "+i.toString(),15, 
+//					i.toString().length());
 //				buffer.newLine();
 //			}   
 //
@@ -223,25 +242,54 @@ public class BankModel extends AbstractTableModel {
 			"Interest Rate", "Minimum Balance"};
 	private Vector<Account> acts;
 	
+	/*****************************************************************
+	Constructor for BankModel
+	******************************************************************/
 	public BankModel() {
 		acts = new Vector<Account>();
 	}
 
+	/*****************************************************************
+	Returns number of columns
+	
+	@return int number of columns
+	******************************************************************/
 	@Override
 	public int getColumnCount() {
 		return columnNames.length;
 	}
 
+	/*****************************************************************
+	Returns number of rows
+	
+	@return int number of rows
+	******************************************************************/
 	@Override
 	public int getRowCount() {
 		return acts.size();
 	}
 	
+	/*****************************************************************
+	Returns name of specified column
+	
+	@return String name of column
+	******************************************************************/
 	@Override
 	public String getColumnName(int column) {
 		return columnNames[column];
 	}
 	
+	/*****************************************************************
+	Adds specified account to JTable
+	@param act int representing type of acocunt
+	@param actNum int for accoun number
+	@param name String for account name
+	@param dateOpened GregorianCalendar for account date opened
+	@param bal double for current balance
+	@param monthFee double for monthly fee
+	@param interestRate double for interest rate
+	@param minBal double for minimum balance
+	******************************************************************/
 	public void addAccount(int act, int actNum, String name, 
 			GregorianCalendar dateOpened, double bal, double monthFee, 
 				double interestRate, double minBal){
@@ -255,11 +303,15 @@ public class BankModel extends AbstractTableModel {
 		
 		}
 		fireTableRowsInserted(0, acts.size());
-		for(Account i:acts){
-			System.out.println(i+",  "+ acts.size());
-		}
 	}
 
+	/*****************************************************************
+	Return object at given coordinates
+	
+	@param int row coordinate
+	@param int column coordinate
+	@return object at coordinates
+	******************************************************************/
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		Account a = (Account)acts.get(rowIndex);
@@ -305,6 +357,18 @@ public class BankModel extends AbstractTableModel {
 		return o;
 	}
 	
+	/*****************************************************************
+	Updates given account
+	
+	@param a int index of account row
+	@param actNum int account number
+	@param name String account name
+	@param dateOpened GregorianCalendar account date opened
+	@param bal double current balance
+	@param monthFee double monthly fee
+	@param interestRate double interest rate
+	@param minBal double minimum balance
+	******************************************************************/
 	public void updateAccount(int a, int actNum, String name, 
 			GregorianCalendar dateOpened, double bal, double monthFee, 
 			double interestRate, double minBal) {
@@ -327,12 +391,22 @@ public class BankModel extends AbstractTableModel {
 		fireTableRowsUpdated(0, acts.size());
 	}
 	
+	/*****************************************************************
+	Deletes account at given index
+	
+	@param actPos int index of account
+	******************************************************************/
 	public void deleteAccount(int actPos) {
 		acts.removeElementAt(actPos);
 		fireTableRowsDeleted(0, acts.size());
-		System.out.println(actPos+",  "+ acts.size());
 	}
 	
+	/*****************************************************************
+	Saves accounts to binary file
+	
+	@param file String name of file
+	@throws IOException
+	******************************************************************/
 	public void saveBinary(String file) throws IOException {
 	ObjectOutputStream oos = null;
 	FileOutputStream fout = null;
@@ -349,6 +423,12 @@ public class BankModel extends AbstractTableModel {
 		}
 	}
 	
+	/*****************************************************************
+	Loads accounts from binary file
+	
+	@param file String file name
+	@throws IOException
+	******************************************************************/
 	public void loadBinary(String file) throws IOException {
 	try{
 		   FileInputStream fin = new FileInputStream(file);
@@ -362,6 +442,11 @@ public class BankModel extends AbstractTableModel {
 	   } 
 	}
 	
+	/*****************************************************************
+	Loads accounts from text file
+	
+	@param file String file name
+	******************************************************************/
 	public void loadText(String file) {
 		// This will reference one line at a time
 	    String line = null;
@@ -379,7 +464,6 @@ public class BankModel extends AbstractTableModel {
 	            new BufferedReader(fileReader);
 	
 	        while((line = bufferedReader.readLine()) != null) {
-	        	System.out.println(line);
 	            lines = line.split(",        ");
 	            
 	            int actNum = Integer.parseInt(lines[1]);
@@ -392,7 +476,8 @@ public class BankModel extends AbstractTableModel {
 	            int day = Integer.parseInt(parts[1]);
 	            int year = Integer.parseInt(parts[2]);
 	            
-	            GregorianCalendar c = new GregorianCalendar(year, month, day);
+	            GregorianCalendar c = new GregorianCalendar(year, month,
+	            		day);
 	            
 	            if (lines[0].equals("Checking")) {
 		            Double fee = Double.parseDouble(lines[5]);
@@ -424,6 +509,12 @@ public class BankModel extends AbstractTableModel {
 	    }
 	}
 	
+	/*****************************************************************
+	Saves accounts to text file
+	
+	@param name String file name
+	@throws IOException
+	******************************************************************/
 	public void saveText(String name) throws IOException {
 		File file = new File(name);
 		file.createNewFile();
@@ -438,41 +529,52 @@ public class BankModel extends AbstractTableModel {
 
 			for(Account i:acts) {
 				if (i instanceof CheckingAccount) {
-					String str = i.getClass() + ",        " + ((CheckingAccount) i).toString();
-					buffer.write(str,15,((CheckingAccount) i).toString().length() + 24);
+					String str = i.getClass() + ",        " + 
+				((CheckingAccount) i).toString();
+					buffer.write(str,15,((CheckingAccount) i).toString()
+							.length() + 24);
 				}
 				else {
-					String str = i.getClass() + ",        " + ((SavingsAccount) i).toString();
-					buffer.write(str,15,((SavingsAccount) i).toString().length() + 23);
+					String str = i.getClass() + ",        " + 
+				((SavingsAccount) i).toString();
+					buffer.write(str,15,((SavingsAccount) i).toString()
+							.length() + 23);
 				}
 				buffer.newLine();
-			}   
-
-        
+			}
 			buffer.close();         
 		}
 		catch(FileNotFoundException ex) {
-			System.out.println(
+			JOptionPane.showMessageDialog(null,
 					"Unable to open file '" + 
 							file + "");                
 		}
 		catch (IOException ex) {
-			System.out.println(
+			JOptionPane.showMessageDialog(null,
 					"Error reading file '" 
 							+ file + "");                  
 		}
 	}
 	
+	/*****************************************************************
+	Sorts account by account number
+	******************************************************************/
 	public void sortByNumber() {
 		Collections.sort(acts, new SortByNumber());
 		fireTableRowsUpdated(0, acts.size());
 	}
 	
+	/*****************************************************************
+	Sorts account by account owner
+	******************************************************************/
 	public void sortByOwner() {
 		Collections.sort(acts, new SortByOwner());
 		fireTableRowsUpdated(0, acts.size());
 	}
 
+	/*****************************************************************
+	Sorts accounts by date opened
+	******************************************************************/
 	public void sortByDate() {
 		Collections.sort(acts, new SortByDate());
 		fireTableRowsUpdated(0, acts.size());
