@@ -130,40 +130,51 @@ public class BankGUI extends JFrame {
 //		};
 //		jListArea.addMouseListener(mouseListener);
 //	}
-	MouseListener mouseListener = new MouseAdapter() {
-	     public void mouseClicked(MouseEvent e) {
-	         if (e.getClickCount() == 1) {
-	             index = jTableArea.rowAtPoint(e.getPoint());
+		MouseListener mouseListener = new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount() == 1) {
+					index = jTableArea.rowAtPoint(e.getPoint());
 	             
-	             fields[0].setText(Integer.toString((int)model.getValueAt(index, 0)));
-	             fields[1].setText((String)model.getValueAt(index, 1));
-	             fields[2].setText((String)model.getValueAt(index, 2));
-	             fields[3].setText(Double.toString((double)model.getValueAt(index, 3)));
-	             if (model.getValueAt(index, 4) instanceof String) {
-	            	 fields[4].setText((String)model.getValueAt(index, 4));
-	             }
-	             else if (model.getValueAt(index, 4) instanceof Double) {
-	            	 fields[4].setText(Double.toString((double)model.getValueAt(index, 4)));
-	             }
-	             if (model.getValueAt(index, 5) instanceof String) {
-	            	 fields[5].setText((String)model.getValueAt(index, 5));
-	             }
-	             else if (model.getValueAt(index, 5) instanceof Double) {
-	            	 fields[5].setText(Double.toString((double)model.getValueAt(index, 5)));
-	             }
-	             if (model.getValueAt(index, 6) instanceof String) {
-	            	 fields[6].setText((String)model.getValueAt(index, 6));
-	             }
-	             else if (model.getValueAt(index, 6) instanceof Double) {
-	            	 fields[6].setText(Double.toString((double)model.getValueAt(index, 6)));
-	             } 
+					if (model.getValueAt(index, 4) instanceof String) {
+						isSavings();
+						fields[4].setText((String)model.getValueAt
+								(index, 4));
+					}
+					else if (model.getValueAt(index, 4) instanceof 
+							Double) {
+						isChecking();
+						fields[4].setText(Double.toString((double)model
+								.getValueAt(index, 4)));
+					}
+					if (model.getValueAt(index, 5) instanceof String) {
+						fields[5].setText((String)model.getValueAt
+								(index, 5));
+					}
+					else if (model.getValueAt(index, 5) instanceof 
+							Double) {
+						fields[5].setText(Double.toString((double)model
+								.getValueAt(index, 5)));
+					}
+					if (model.getValueAt(index, 6) instanceof String) {
+						fields[6].setText((String)model.getValueAt
+								(index, 6));
+					}
+					else if (model.getValueAt(index, 6) instanceof 
+							Double) {
+						fields[6].setText(Double.toString((double)model.getValueAt(index, 6)));
+					} 
+					fields[0].setText(Integer.toString((int)model.getValueAt(index, 0)));
+					fields[1].setText((String)model.getValueAt(index, 1));
+					fields[2].setText((String)model.getValueAt(index, 2));
+					fields[3].setText(Double.toString((double)model.getValueAt(index, 3)));
 	             
-	             changeable = true;
-	          }
-	     }
-	 };
-	 jTableArea.addMouseListener(mouseListener);
-}
+					changeable = true;
+				}
+			}
+		};
+		jTableArea.addMouseListener(mouseListener);
+	}
+
 	private void isSavings() {
 		clear();
 		savings.setSelected(true);
@@ -429,10 +440,11 @@ public class BankGUI extends JFrame {
 				isSavings();
 			}
 			if (e.getSource() == update) {
-				if (index > 0) {
+				System.out.println(index);
+				if (index >= 0) {
 					int actNum = Integer.parseInt(fields[0].getText());
 					String name = fields[1].getText();
-					GregorianCalendar cal = (GregorianCalendar) calendar.getCalendar();
+					GregorianCalendar cal = new GregorianCalendar(2013, 10, 10);
 					double bal = Double.parseDouble(fields[3].getText());
 					double monthFee = 0;
 					double interestRate = 0;
@@ -444,8 +456,7 @@ public class BankGUI extends JFrame {
 						interestRate = Double.parseDouble(fields[5].getText());
 						minBal = Double.parseDouble(fields[6].getText());
 					}
-					model.updateAccount((Account) model.getElementAt(index), actNum, name, cal, bal, monthFee,
-							interestRate, minBal);
+					model.updateAccount(index, actNum, name, cal, bal, monthFee, interestRate, minBal);
 				}
 			}
 
