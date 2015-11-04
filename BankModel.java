@@ -1,7 +1,5 @@
 package Project3;
 
-package project3;
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -9,6 +7,7 @@ import java.util.GregorianCalendar;
 import java.util.Vector;
 
 import javax.swing.AbstractListModel;
+import javax.swing.JOptionPane;
 import javax.swing.table.AbstractTableModel;
 
 //public class BankModel extends AbstractListModel {
@@ -165,38 +164,37 @@ import javax.swing.table.AbstractTableModel;
 //    }
 //}
 //
-//public void saveText(String name) throws IOException {
-//	File file = new File(name);
-//	file.createNewFile();
-//	
-//	try {
-//        // FileWriter writes text files in the default encoding.
-//        FileWriter writer = 
-//            new FileWriter(file);
+//	public void saveText(String name) throws IOException {
+//		File file = new File(name);
+//		file.createNewFile();
+//		try {
+//			// FileWriter writes text files in the default encoding.
+//			FileWriter writer = 
+//					new FileWriter(file);
 //
-//        // BufferWriter holds the text
-//        BufferedWriter buffer = 
-//            new BufferedWriter(writer);
+//			// BufferWriter holds the text
+//			BufferedWriter buffer = 
+//					new BufferedWriter(writer);
 //
-//        for(Account i:acts) {
-//          buffer.write(i.getClass()+",        "+i.toString(),15, i.toString().length());
-//          buffer.newLine();
-//        }   
+//			for(Account i:acts) {
+//				buffer.write(i.getClass()+",        "+i.toString(),15, i.toString().length());
+//				buffer.newLine();
+//			}   
 //
 //        
-//        buffer.close();         
-//    }
-//    catch(FileNotFoundException ex) {
-//        System.out.println(
-//            "Unable to open file '" + 
-//            file + "");                
-//    }
-//    catch(IOException ex) {
-//        System.out.println(
-//            "Error reading file '" 
-//            + file + "");                  
-//    }
-//}
+//			buffer.close();         
+//		}
+//		catch(FileNotFoundException ex) {
+//			System.out.println(
+//					"Unable to open file '" + 
+//							file + "");                
+//		}
+//		catch (IOException ex) {
+//			System.out.println(
+//					"Error reading file '" 
+//							+ file + "");                  
+//		}
+//	}
 //
 //	public void loadXML(String file) {
 //
@@ -364,6 +362,107 @@ public class BankModel extends AbstractTableModel {
 	   } 
 	}
 	
+	public void loadText(String file) {
+		// This will reference one line at a time
+	    String line = null;
+	    String[] parts=null;
+	    String[]lines;
+	    int[] date={0,0,0};
+	    
+		try {
+	        // FileReader reads text files in the default encoding.
+	        FileReader fileReader = 
+	            new FileReader(file);
+	
+	        // Always wrap FileReader in BufferedReader.
+	        BufferedReader bufferedReader = 
+	            new BufferedReader(fileReader);
+	
+	        while((line = bufferedReader.readLine()) != null) {
+	        	System.out.println(line);
+	            lines = line.split(",        ");
+	            
+	            int actNum = Integer.parseInt(lines[1]);
+	            String actOwn = lines[2];
+	            String cal = lines[3];
+	            Double balance = Double.parseDouble(lines[4]);
+	            
+	            parts = cal.split("/");
+	            int month = Integer.parseInt(parts[0]);
+	            int day = Integer.parseInt(parts[1]);
+	            int year = Integer.parseInt(parts[2]);
+	            
+	            GregorianCalendar c = new GregorianCalendar(year, month, day);
+	            
+	            if (lines[0].equals("Checking")) {
+		            Double fee = Double.parseDouble(lines[5]);
+	            	acts.add(new CheckingAccount(actNum, actOwn, c,
+	            			balance, fee));
+	            }
+	            else {
+		            Double rate = Double.parseDouble(lines[6]);
+		            Double min = Double.parseDouble(lines[7]);
+	            	acts.add(new SavingsAccount(actNum, actOwn, c,
+	            			balance, rate, min));
+	            }
+	        fireTableRowsInserted(0, acts.size());
+	        }
+	        
+	
+	        // Always close files.
+	        bufferedReader.close();         
+	    }
+	    catch(FileNotFoundException ex) {
+	    	JOptionPane.showMessageDialog(null, 
+	            "Unable to open file '" + 
+	            file + "");                
+	    }
+	    catch(IOException ex) {
+	    	JOptionPane.showMessageDialog(null, 
+	            "Error reading file '" 
+	            + file + "");                  
+	    }
+	}
+	
+	public void saveText(String name) throws IOException {
+		File file = new File(name);
+		file.createNewFile();
+		try {
+			// FileWriter writes text files in the default encoding.
+			FileWriter writer = 
+					new FileWriter(file);
+
+			// BufferWriter holds the text
+			BufferedWriter buffer = 
+					new BufferedWriter(writer);
+
+			for(Account i:acts) {
+				if (i instanceof CheckingAccount) {
+					String str = i.getClass() + ",        " + ((CheckingAccount) i).toString();
+					buffer.write(str,15,((CheckingAccount) i).toString().length() + 24);
+				}
+				else {
+					String str = i.getClass() + ",        " + ((SavingsAccount) i).toString();
+					buffer.write(str,15,((SavingsAccount) i).toString().length() + 23);
+				}
+				buffer.newLine();
+			}   
+
+        
+			buffer.close();         
+		}
+		catch(FileNotFoundException ex) {
+			System.out.println(
+					"Unable to open file '" + 
+							file + "");                
+		}
+		catch (IOException ex) {
+			System.out.println(
+					"Error reading file '" 
+							+ file + "");                  
+		}
+	}
+	
 	public void sortByNumber() {
 		Collections.sort(acts, new SortByNumber());
 		fireTableRowsUpdated(0, acts.size());
@@ -378,5 +477,4 @@ public class BankModel extends AbstractTableModel {
 		Collections.sort(acts, new SortByDate());
 		fireTableRowsUpdated(0, acts.size());
 	}
-}
 }

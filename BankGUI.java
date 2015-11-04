@@ -1,7 +1,6 @@
 package Project3;
 
-//Need to add calendar, convert to JTable, add sort methods, add
-//listeners for JMenuItems
+//Need to add calendar, style guide, more warnings?
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -312,6 +311,36 @@ public class BankGUI extends JFrame{
 					number = Integer.parseInt(fields[0].getText());
 					owner = fields[1].getText();
 					bal = Double.parseDouble(fields[3].getText());
+					if (checking.isSelected()) {
+						type = 0;
+						try {
+							fee = Double.parseDouble(fields[4].getText());
+							model.addAccount(type, number, owner, cal, bal, 
+									fee, rate, min);
+						}
+						catch (NumberFormatException n){
+							throw n;
+						}
+					}
+						
+					if (savings.isSelected()) {
+						type = 1;
+						try {
+							rate = Double.parseDouble(fields[5].getText());
+							min = Double.parseDouble(fields[6].getText());
+							if (bal < min) {
+								throw new IllegalArgumentException();
+							}
+							model.addAccount(type, number, owner, cal, bal, 
+									fee, rate, min);
+						}
+						catch (NumberFormatException n){
+							throw n;
+						}
+						catch (IllegalArgumentException a) {
+							throw a;
+						}
+					}
 					//pulls the Date opened from the text field
 					//calend = fields[2].getText().split("/");
 					// splits it into its corresponding parts
@@ -321,32 +350,16 @@ public class BankGUI extends JFrame{
 					//cal= new GregorianCalendar(cale[2],cale[0],//cale[1]);
 				}
 				catch (NumberFormatException n){
-					JOptionPane.showMessageDialog(null, "A field is empty.");
+					JOptionPane.showMessageDialog(null, "Either a "
+								+ "field is empty or contains incorrect"
+								+ " information (ex. 'a' for balance.");
 				}
-				
-				if (checking.isSelected()) {
-					type = 0;
-					try {
-						fee = Double.parseDouble(fields[4].getText());
-					}
-					catch (NumberFormatException n){
-						JOptionPane.showMessageDialog(null, "A field is empty.");
-					}
+				catch (IllegalArgumentException a) {
+					JOptionPane.showMessageDialog(null, "Your balance "
+							+ "is below the minimum balance allowed.");
 				}
-					
-				if (savings.isSelected()) {
-					type = 1;
-					try {
-						rate = Double.parseDouble(fields[5].getText());
-						min = Double.parseDouble(fields[6].getText());
-					}
-					catch (NumberFormatException n){
-						JOptionPane.showMessageDialog(null, "A field is empty.");
-					}
-				}
-				model.addAccount(type, number, owner, cal, bal, fee,
-						rate, min);
-				jListArea.setModel(model);
+				//Check on this
+				jTableArea.setModel(model);
 			}
 			if (e.getSource() == clear) {
 				clear();
@@ -405,20 +418,20 @@ public class BankGUI extends JFrame{
 				}
 			}
 			
-//			if (e.getSource() == saveText) {
-//				try {
-//					model.saveText("TextTemp.txt");
-//					System.out.println("Saved to Temp");
-//				}
-//				catch (IOException x) {
-//					JOptionPane.showMessageDialog(null, "Did not save properly");
-//				}
-//			}
-//
-//			if (e.getSource() == loadText) {
-//				model.loadText("TextTemp.txt");
-//			}
-//			
+			if (e.getSource() == saveText) {
+				try {
+					model.saveText("TextTemp.txt");
+					System.out.println("Saved to Temp");
+				}
+				catch (IOException x) {
+					JOptionPane.showMessageDialog(null, "Did not save properly");
+				}
+			}
+
+			if (e.getSource() == loadText) {
+				model.loadText("TextTemp.txt");
+			}
+			
 			if (e.getSource() == sortNumber) {
 				model.sortByNumber();
 				index = -1;

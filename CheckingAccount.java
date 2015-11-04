@@ -1,4 +1,4 @@
-package project3;
+package Project3;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -36,7 +36,8 @@ public class CheckingAccount extends Account {
 	}
 	
 	public String toString() {
-		String str = super.toString() + ",        " +  monthlyFee;
+		String str = super.toString() + ",        " +  monthlyFee + ", "
+				+ "       ,        ";
 		return str;
 	}
 	
