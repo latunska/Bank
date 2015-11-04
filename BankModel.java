@@ -2,6 +2,7 @@ package Project3;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 
 import javax.swing.AbstractListModel;
@@ -65,15 +66,18 @@ public class BankModel extends AbstractListModel {
 	}
 
 	public void sortByOwner() {
-
+		Collections.sort(acts, new SortByOwner());
+		fireContentsChanged(acts, 0, acts.size());
 	}
 
 	public void sortByNumber() {
-
+		Collections.sort(acts, new SortByNumber());
+		fireContentsChanged(acts, 0, acts.size());
 	}
 
-	public void sortByName() {
-
+	public void sortByDate() {
+		Collections.sort(acts, new SortByDate());
+		fireContentsChanged(acts, 0, acts.size());
 	}
 
 	public void loadBinary(String file) throws IOException {

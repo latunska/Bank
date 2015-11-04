@@ -14,6 +14,7 @@ import java.util.GregorianCalendar;
 import javax.swing.*;
 import javax.swing.table.TableModel;
 
+
 public class BankGUI extends JFrame{
 		
 	/** buttons to add, delete, update, and clear account fields */
@@ -87,40 +88,40 @@ public class BankGUI extends JFrame{
         
         userInput.add(info, BorderLayout.EAST);
         
-	userInput.add(buttons, BorderLayout.WEST);
+		userInput.add(buttons, BorderLayout.WEST);
 		
-	add(userInput);
+		add(userInput);
 		
-	MouseListener mouseListener = new MouseAdapter() {
-	     public void mouseClicked(MouseEvent e) {
-	         if (e.getClickCount() == 1) {
-	             index = jListArea.locationToIndex(e.getPoint());
+		MouseListener mouseListener = new MouseAdapter() {
+		     public void mouseClicked(MouseEvent e) {
+		         if (e.getClickCount() == 1) {
+		             index = jListArea.locationToIndex(e.getPoint());
 		             
-	             if (model.getElementAt(index) instanceof SavingsAccount) {
-	        		 isSavings();
-		        	 double rate = (((SavingsAccount)model.getElementAt(index)).getInterestRate());
-		       		 double minBal = (((SavingsAccount)model.getElementAt(index)).getInterestRate());
-		       		 fields[5].setText(Double.toString(rate));
-		      		 fields[6].setText(Double.toString(minBal));
-		       	 }
-	             if (model.getElementAt(index) instanceof CheckingAccount) {
-	            	 isChecking();
-	            	 double fee = (((CheckingAccount)model.getElementAt(index)).getMonthlyFee());
-	            	 fields[4].setText(Double.toString(fee));
-	             }
+		             if (model.getElementAt(index) instanceof SavingsAccount) {
+		        		 isSavings();
+		        		 double rate = (((SavingsAccount)model.getElementAt(index)).getInterestRate());
+		        		 double minBal = (((SavingsAccount)model.getElementAt(index)).getInterestRate());
+		        		 fields[5].setText(Double.toString(rate));
+		        		 fields[6].setText(Double.toString(minBal));
+		        	 }
+		             if (model.getElementAt(index) instanceof CheckingAccount) {
+		            	 isChecking();
+		            	 double fee = (((CheckingAccount)model.getElementAt(index)).getMonthlyFee());
+		            	 fields[4].setText(Double.toString(fee));
+		             }
 		             
-	             int num = (((Account)model.getElementAt(index)).getNumber());
-	             String owner = (((Account)model.getElementAt(index)).getOwner());
-	             double balance = (((Account)model.getElementAt(index)).getBalance());
-	             fields[0].setText(Integer.toString(num));
-	             fields[1].setText(owner);
-	             fields[3].setText(Double.toString(balance));
+		             int num = (((Account)model.getElementAt(index)).getNumber());
+		             String owner = (((Account)model.getElementAt(index)).getOwner());
+		             double balance = (((Account)model.getElementAt(index)).getBalance());
+		             fields[0].setText(Integer.toString(num));
+		             fields[1].setText(owner);
+		             fields[3].setText(Double.toString(balance));
 		             
-	             changeable = true;
-	          }
-	     }
-	 };
-	 jListArea.addMouseListener(mouseListener);
+		             changeable = true;
+		          }
+		     }
+		 };
+		 jListArea.addMouseListener(mouseListener);
 	}
 	
 	private void isSavings() {
@@ -154,6 +155,10 @@ public class BankGUI extends JFrame{
         sortOwner = new JMenuItem("By Account Owner");
         sortDate = new JMenuItem("By Date Opened");
         
+        sortNumber.addActionListener(listener);
+        sortOwner.addActionListener(listener);
+        sortDate.addActionListener(listener);
+        
         sort.add(sortNumber);
         sort.add(sortOwner);
         sort.add(sortDate);
@@ -167,6 +172,10 @@ public class BankGUI extends JFrame{
         
         saveBinary.addActionListener(listener);
         loadBinary.addActionListener(listener);
+        saveText.addActionListener(listener);
+        loadText.addActionListener(listener);
+        saveXML.addActionListener(listener);
+        loadXML.addActionListener(listener);
         
         file.add(loadBinary);
         file.add(saveBinary);
@@ -304,7 +313,7 @@ public class BankGUI extends JFrame{
 				if (index > 0) {
 					int actNum = Integer.parseInt(fields[0].getText());
 					String name = fields[1].getText();
-					GregorianCalendar cal = new GregorianCalendar(2015, 10, 10);
+					GregorianCalendar cal = new GregorianCalendar(2013, 10, 10);
 					double bal = Double.parseDouble(fields[3].getText());
 					double monthFee = 0;
 					double interestRate = 0;
@@ -330,7 +339,7 @@ public class BankGUI extends JFrame{
 			
 			if (e.getSource() == saveBinary) {
 				try {
-					model.saveBinary("Temp");
+					model.saveBinary("BinTemp");
 					System.out.println("Saved to Temp");
 				}
 				catch (IOException x) {
@@ -340,12 +349,35 @@ public class BankGUI extends JFrame{
 			
 			if (e.getSource() == loadBinary) {
 				try {
-					model.loadBinary("Temp");
+					model.loadBinary("BinTemp");
 					System.out.println("Loaded file");
 				}
 				catch (IOException x) {
 					JOptionPane.showMessageDialog(null, "Did not load properly.");
 				}
+			}
+			
+			if (e.getSource() == saveText) {
+				model.saveText("TextTemp");
+			}
+			
+			if (e.getSource() == loadText) {
+				model.loadText("TextTemp");
+			}
+			
+			if (e.getSource() == sortNumber) {
+				model.sortByNumber();
+				index = -1;
+			}
+			
+			if (e.getSource() == sortOwner) {
+				model.sortByOwner();
+				index = -1;
+			}
+			
+			if (e.getSource() == sortDate) {
+				model.sortByDate();
+				index = -1;
 			}
 		}
 	}
