@@ -8,6 +8,7 @@ import java.util.GregorianCalendar;
  * @author Alex
  * @author Cari
  */
+
 public class SavingsAccount extends Account {
 	private static final long serialVersionUID = 1L;
 	   

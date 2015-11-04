@@ -1,36 +1,28 @@
-/**
- * 
- */
 package Project3;
 
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.GregorianCalendar;
 
-public abstract class Account implements Serializable, Comparable<Account> {
+public abstract class Account implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private int number;
 	private String owner;
-	private GregorianCalendar dateOpened;
+	private Calendar dateOpened;
 	private double balance;
 	
 	private static long MIL_PER_YEAR = 31556952000L;
 	private static long MIL_PER_MONTH = 2629746000L;
 	private static long MIL_PER_DAY = 86400000L;
 	
-	public Account(int number, String owner, GregorianCalendar
+	public Account(int number, String owner, Calendar
 			dateOpened, double balance) {
 		super();
 		this.number = number;
 		this.owner = owner;
 		this.dateOpened = dateOpened;
 		this.balance = balance;
-	}
-
-	public Account(int num, String own, double bal) {
-		number = num;
-		owner = own;
-		balance = bal;
 	}
 
 	public int getNumber() {
@@ -49,7 +41,7 @@ public abstract class Account implements Serializable, Comparable<Account> {
 		this.owner = owner;
 	}
 
-	public GregorianCalendar getDateOpened() {
+	public Calendar getDateOpened() {
 		return dateOpened;
 	}
 
@@ -82,33 +74,11 @@ public abstract class Account implements Serializable, Comparable<Account> {
 	
 	public String calendarString() {
 		//FIXME: Day slightly off due to leap years/February/etc
-		long time = dateOpened.getTimeInMillis();
-		long years = time / MIL_PER_YEAR;
-		long months = (time%MIL_PER_YEAR) / MIL_PER_MONTH;
-		long days = (time%MIL_PER_MONTH) / MIL_PER_DAY;
-		
-//		String str = months + "/" + days + "/" + (years + 1970L);
-//		return str;
-		//		if (days>9 &&months>9){
-			String str = dateOpened.MONTH + "/" + dateOpened.DAY_OF_MONTH + "/" + dateOpened.YEAR;
-			System.out.println(str);
-			return str;
-//		}
-//		if(months>9 && days<10)
-//		{
-//			String str =dateOpened.MONTH + "/0" + dateOpened.DAY_OF_MONTH + "/" + dateOpened.YEAR;
-//			return str;
-//		}
-//		else if(months<10 && days>9)
-//		{
-//			String str ="0"+ dateOpened.MONTH + "/" +  dateOpened.DAY_OF_MONTH + "/" + dateOpened.YEAR;
-//			return str;
-//		}
-//		else 
-//		{
-//			String str ="0"+ dateOpened.MONTH + "/0" +  dateOpened.DAY_OF_MONTH + "/" + dateOpened.YEAR;
-//			return str;
-//		}
+		String str = dateOpened.get(Calendar.MONTH) + "/" + 
+				dateOpened.get(Calendar.DAY_OF_MONTH) + "/" 
+				+ dateOpened.get(Calendar.YEAR);
+		System.out.println(str);
+		return str;
 	}
 	
 	public String toString() {

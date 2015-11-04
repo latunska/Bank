@@ -1,6 +1,7 @@
 package Project3;
 
-//Need to create drop down calendar, convert to JTable at some point
+//Need to add calendar, convert to JTable, add sort methods, add
+//listeners for JMenuItems
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -42,7 +43,8 @@ public class BankGUI extends JFrame{
 	
 	private BankModel model;
 	
-	private JList jListArea;
+//	private JList jListArea;
+	private JTable jTableArea;
 	
 	private int index;
 	
@@ -80,8 +82,10 @@ public class BankGUI extends JFrame{
         addInfo();
         
         model = new BankModel();
-        jListArea = new JList(model);
-        JScrollPane scrollPane = new JScrollPane(jListArea);
+        jTableArea = new JTable(model);
+//        jListArea = new JList(model);
+//        JScrollPane scrollPane = new JScrollPane(jListArea);
+        JScrollPane scrollPane = new JScrollPane(jTableArea);
         table.add(scrollPane);
 
         add(table);
@@ -92,37 +96,72 @@ public class BankGUI extends JFrame{
 		
 		add(userInput);
 		
-		MouseListener mouseListener = new MouseAdapter() {
-		     public void mouseClicked(MouseEvent e) {
-		         if (e.getClickCount() == 1) {
-		             index = jListArea.locationToIndex(e.getPoint());
-		             
-		             if (model.getElementAt(index) instanceof SavingsAccount) {
-		        		 isSavings();
-		        		 double rate = (((SavingsAccount)model.getElementAt(index)).getInterestRate());
-		        		 double minBal = (((SavingsAccount)model.getElementAt(index)).getInterestRate());
-		        		 fields[5].setText(Double.toString(rate));
-		        		 fields[6].setText(Double.toString(minBal));
-		        	 }
-		             if (model.getElementAt(index) instanceof CheckingAccount) {
-		            	 isChecking();
-		            	 double fee = (((CheckingAccount)model.getElementAt(index)).getMonthlyFee());
-		            	 fields[4].setText(Double.toString(fee));
-		             }
-		             
-		             int num = (((Account)model.getElementAt(index)).getNumber());
-		             String owner = (((Account)model.getElementAt(index)).getOwner());
-		             double balance = (((Account)model.getElementAt(index)).getBalance());
-		             fields[0].setText(Integer.toString(num));
-		             fields[1].setText(owner);
-		             fields[3].setText(Double.toString(balance));
-		             
-		             changeable = true;
-		          }
-		     }
-		 };
-		 jListArea.addMouseListener(mouseListener);
-	}
+//		MouseListener mouseListener = new MouseAdapter() {
+//		     public void mouseClicked(MouseEvent e) {
+//		         if (e.getClickCount() == 1) {
+//		             index = jListArea.locationToIndex(e.getPoint());
+//		             
+//		             if (model.getElementAt(index) instanceof SavingsAccount) {
+//		        		 isSavings();
+//		        		 double rate = (((SavingsAccount)model.getElementAt(index)).getInterestRate());
+//		        		 double minBal = (((SavingsAccount)model.getElementAt(index)).getInterestRate());
+//		        		 fields[5].setText(Double.toString(rate));
+//		        		 fields[6].setText(Double.toString(minBal));
+//		        	 }
+//		             if (model.getElementAt(index) instanceof CheckingAccount) {
+//		            	 isChecking();
+//		            	 double fee = (((CheckingAccount)model.getElementAt(index)).getMonthlyFee());
+//		            	 fields[4].setText(Double.toString(fee));
+//		             }
+//		             
+//		             int num = (((Account)model.getElementAt(index)).getNumber());
+//		             String owner = (((Account)model.getElementAt(index)).getOwner());
+//		             double balance = (((Account)model.getElementAt(index)).getBalance());
+//		             fields[0].setText(Integer.toString(num));
+//		             fields[1].setText(owner);
+//		             fields[3].setText(Double.toString(balance));
+//		             
+//		             changeable = true;
+//		          }
+//		     }
+//		 };
+//		 jListArea.addMouseListener(mouseListener);
+//	}
+		
+	MouseListener mouseListener = new MouseAdapter() {
+	     public void mouseClicked(MouseEvent e) {
+	         if (e.getClickCount() == 1) {
+	             index = jTableArea.rowAtPoint(e.getPoint());
+	             
+	             fields[0].setText(Integer.toString((int)model.getValueAt(index, 0)));
+	             fields[1].setText((String)model.getValueAt(index, 1));
+	             fields[2].setText((String)model.getValueAt(index, 2));
+	             fields[3].setText(Double.toString((double)model.getValueAt(index, 3)));
+	             if (model.getValueAt(index, 4) instanceof String) {
+	            	 fields[4].setText((String)model.getValueAt(index, 4));
+	             }
+	             else if (model.getValueAt(index, 4) instanceof Double) {
+	            	 fields[4].setText(Double.toString((double)model.getValueAt(index, 4)));
+	             }
+	             if (model.getValueAt(index, 5) instanceof String) {
+	            	 fields[5].setText((String)model.getValueAt(index, 5));
+	             }
+	             else if (model.getValueAt(index, 5) instanceof Double) {
+	            	 fields[5].setText(Double.toString((double)model.getValueAt(index, 5)));
+	             }
+	             if (model.getValueAt(index, 6) instanceof String) {
+	            	 fields[6].setText((String)model.getValueAt(index, 6));
+	             }
+	             else if (model.getValueAt(index, 6) instanceof Double) {
+	            	 fields[6].setText(Double.toString((double)model.getValueAt(index, 6)));
+	             } 
+	             
+	             changeable = true;
+	          }
+	     }
+	 };
+	 jTableArea.addMouseListener(mouseListener);
+}
 	
 	private void isSavings() {
 		clear();
@@ -257,7 +296,8 @@ public class BankGUI extends JFrame{
 		
 		public void actionPerformed(ActionEvent e) {
 			
-							String[]calend;
+			if (e.getSource() == add) {
+				String[]calend;
 				int[] cale = {2015, 10, 10};
 				int type = 0;
 				int number = 0;
@@ -333,7 +373,7 @@ public class BankGUI extends JFrame{
 						interestRate = Double.parseDouble(fields[5].getText());
 						minBal = Double.parseDouble(fields[6].getText());
 					}
-					model.updateAccount((Account) model.getElementAt(index), actNum, name, cal, bal, monthFee, interestRate, minBal);
+					model.updateAccount(index, actNum, name, cal, bal, monthFee, interestRate, minBal);
 				}
 			}
 			
@@ -365,20 +405,20 @@ public class BankGUI extends JFrame{
 				}
 			}
 			
-			if (e.getSource() == saveText) {
-								try {
-					model.saveText("TextTemp.txt");
-					System.out.println("Saved to Temp");
-				}
-				catch (IOException x) {
-					JOptionPane.showMessageDialog(null, "Did not save properly");
-				}
-			}
-			
-			if (e.getSource() == loadText) {
-				model.loadText("TextTemp.txt");
-			}
-			
+//			if (e.getSource() == saveText) {
+//				try {
+//					model.saveText("TextTemp.txt");
+//					System.out.println("Saved to Temp");
+//				}
+//				catch (IOException x) {
+//					JOptionPane.showMessageDialog(null, "Did not save properly");
+//				}
+//			}
+//
+//			if (e.getSource() == loadText) {
+//				model.loadText("TextTemp.txt");
+//			}
+//			
 			if (e.getSource() == sortNumber) {
 				model.sortByNumber();
 				index = -1;

@@ -1,20 +1,14 @@
-/**
- * 
- */
-package Project3;
+package project3;
 
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-/**
- * @author Alex
- * @author Cari
- */
 public class CheckingAccount extends Account {
 	
 	private static final long serialVersionUID = 1L;
 	private double monthlyFee;
 	
-	public CheckingAccount(int num, String own, GregorianCalendar date,
+	public CheckingAccount(int num, String own, Calendar date,
 			double bal, double fee) {
 		super(num, own, date, bal);
 		monthlyFee = fee;
